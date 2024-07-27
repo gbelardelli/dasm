@@ -1,3 +1,4 @@
 /target
 *.d64
 *.prg
+*.code-work*
