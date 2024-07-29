@@ -49,7 +49,7 @@ impl DisassembledLine {
 
 pub trait DasmTrait {
 
-    fn fetch_and_decode(&self, bytes: &Vec<u8>) -> DisassembledLine;
+    fn fetch_and_decode(&self) -> DisassembledLine;
 
 
 }
