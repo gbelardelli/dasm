@@ -9,7 +9,7 @@ pub enum LineType {
 #[derive(Debug, Default)]
 pub struct DisassembledLine {
     line_type: LineType,
-    address: u32,
+    pub address: u32,
     offset: u32,
     return_address: u32,
     output: String,
@@ -41,15 +41,11 @@ impl DisassembledLine {
             comment: String::from("")
         }
     }
-
-    pub fn set_label(&mut self, label: String) {
-        self.label = label;
-    }
 }
 
 pub trait DasmTrait {
 
-    fn fetch_and_decode(&self) -> DisassembledLine;
+    fn fetch_and_decode(&mut self) -> DisassembledLine;
 
 
 }

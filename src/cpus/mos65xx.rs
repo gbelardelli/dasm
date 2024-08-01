@@ -1,21 +1,8 @@
 
 #[derive(Debug,Default)]
 pub struct Cpu65xx {
-    a: u8,
-    x: u8,
-    y: u8,
-    sp: u8,
-
     pc: u16,
-
-    n: bool,
-    v: bool,
-    d: bool,
-    i: bool,
-    z: bool,
-    c: bool,
-
-    memory: BinaryBuffer,
+    memory: Option<BinaryBuffer>,
 }
 
 
@@ -44,7 +31,7 @@ struct Opcode {
     flags: u32
 }
 
-use super::{Mnemonic, BRANCH_OPCODE, INVALID_OPCODE, JMP_OPCODE, SUBROUTINE_OPCODE, UNDOC_OPCODE, VALID_OPCODE};
+use super::{CpuTrait, Mnemonic, BRANCH_OPCODE, INVALID_OPCODE, JMP_OPCODE, SUBROUTINE_OPCODE, UNDOC_OPCODE, VALID_OPCODE};
 use crate::{dasm::{DasmTrait, DisassembledLine}, memory::BinaryBuffer};
 
 const OPCODES_TABLE:&'static [Opcode] = &[
@@ -322,31 +309,41 @@ const OPCODES_TABLE:&'static [Opcode] = &[
 
 ];
 
-impl DasmTrait for Cpu65xx {
-    fn fetch_and_decode(&self) -> DisassembledLine {
-        let fetched_opcode:u8 = self.memory.read_byte(self.pc as u32);
+impl CpuTrait for Cpu65xx {
+    fn fetch_and_decode(&mut self) -> DisassembledLine {
+        let fetched_opcode:u8 = self.memory.as_ref().unwrap().read_byte(self.pc as u32);
         println!("fetched: {}",fetched_opcode);
         let opcode=&OPCODES_TABLE[fetched_opcode as usize];
+
+        /*if opcode.flags & UNDOC_OPCODE != 0 {
+            let mut dasm_line = DisassembledLine::new();
+            dasm_line.address = self.pc as u32;
+            return dasm_line;
+        }*/
+
+        self.pc += match opcode.addressing {
+            AddressingMode::AddrImplied   | 
+            AddressingMode::AddrAccumulator => 1,
+            AddressingMode::AddrImmediate |
+            AddressingMode::AddrZeroPage  | 
+            AddressingMode::AddrZeroPageX |
+            AddressingMode::AddrZeroPageY |
+            AddressingMode::AddrIndirectX |
+            AddressingMode::AddrIndirectY |
+            AddressingMode::AddrRelative => 2,
+            _ => 3
+        };
+
         println!("tadaaaaa: {:#?}",opcode);
         DisassembledLine::default()
-    }
+    }    
 }
 
 impl Cpu65xx {
     pub fn new(memory: BinaryBuffer) -> Cpu65xx {
         Self {
-            a: 0,
-            x: 0,
-            y: 0,
-            sp: 0,
             pc: 0x0000,
-            n: false,
-            v: false,
-            d: false,
-            i: false,
-            z: false,
-            c: false,
-            memory
+            memory: Some(memory)
         }
     }
 }

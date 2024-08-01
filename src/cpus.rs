@@ -1,3 +1,5 @@
+use crate::{dasm::DisassembledLine, memory::BinaryBuffer};
+
 
 
 pub mod mos65xx;
@@ -17,3 +19,6 @@ const DATA_FLAG:u32 = 1 << 7;
 const LOAD_FLAG:u32 = 1 << 8;
 const STORE_FLAG:u32 = 1 << 9;
 
+pub trait CpuTrait {
+    fn fetch_and_decode(&mut self) -> DisassembledLine;
+}

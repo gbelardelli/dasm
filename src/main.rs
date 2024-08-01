@@ -2,13 +2,28 @@ use std::{result, time::Instant};
 use dasm::{DasmTrait, DisassembledLine};
 use memory::BinaryBuffer;
 use utils::{AsciiReferences, extract_ascii_references};
-use cpus::{mos65xx::Cpu65xx};
+use cpus::{mos65xx::Cpu65xx, CpuTrait};
 
 pub mod utils;
 mod dasm;
 mod cpus;
 mod memory;
 
+struct Disassembler<'a> {
+    cpu: &'a mut dyn CpuTrait,
+}
+
+impl<'a> Disassembler<'a> {
+    pub fn new(cpu: &'a mut dyn CpuTrait) -> Self {
+        Disassembler {
+            cpu
+        }
+    }
+
+    pub fn run(&mut self) {
+        self.cpu.fetch_and_decode();
+    }
+}
 fn main() {
     let line = DisassembledLine::new();
     let line2 = DisassembledLine::default();
@@ -21,9 +36,13 @@ fn main() {
 
     let bytes = std::fs::read("./MANIC MINER.prg").unwrap();
     let memory:BinaryBuffer = BinaryBuffer::new(bytes, 0);
+    let mut cpu = Cpu65xx::new(memory);
 
-    let cpu:Cpu65xx = Cpu65xx::new(memory);
-    cpu.fetch_and_decode();
+    let mut cazzo:Disassembler = Disassembler::new(&mut cpu);
+    cazzo.run();
+
+    //let cpu:Cpu65xx = Cpu65xx::new(memory);
+    //cpu.fetch_and_decode();
 
     /*let mut t = Instant::now();
     let refs:AsciiReferences = extract_ascii_references(&bytes, 4);
