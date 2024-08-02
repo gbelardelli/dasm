@@ -12,7 +12,7 @@ pub struct DisassembledLine {
     pub address: u32,
     offset: u32,
     return_address: u32,
-    output: String,
+    pub output: String,
     label: String,
     comment: String
 }
@@ -41,14 +41,13 @@ impl DisassembledLine {
             comment: String::from("")
         }
     }
-}
-
-pub trait DasmTrait {
-
-    fn fetch_and_decode(&mut self) -> DisassembledLine;
-
 
 }
+
+pub trait Disassembler {
+    fn disassemble(&self, offset:usize, code: &[u8]) -> Vec<DisassembledLine>;
+}
+
 #[cfg(test)]
 mod dasm_test {
     use crate::dasm::DisassembledLine;

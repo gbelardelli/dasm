@@ -1,5 +1,5 @@
 use std::{result, time::Instant};
-use dasm::{DasmTrait, DisassembledLine};
+use dasm::{ DisassembledLine};
 use memory::BinaryBuffer;
 use utils::{AsciiReferences, extract_ascii_references};
 use cpus::{mos65xx::Cpu65xx, CpuTrait};
