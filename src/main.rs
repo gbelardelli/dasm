@@ -2,26 +2,34 @@ use std::{result, time::Instant};
 use dasm::{ DisassembledLine};
 use memory::BinaryBuffer;
 use utils::{AsciiReferences, extract_ascii_references};
-use cpus::{mos65xx::Cpu65xx, CpuTrait};
+use cpus::{mos6510::Cpu6510, CpuTrait};
 
 pub mod utils;
 mod dasm;
 mod cpus;
 mod memory;
 
+
+
 struct Disassembler<'a> {
     cpu: &'a mut dyn CpuTrait,
+    start_offset:u32
 }
 
 impl<'a> Disassembler<'a> {
-    pub fn new(cpu: &'a mut dyn CpuTrait) -> Self {
+    pub fn new(cpu: &'a mut dyn CpuTrait, start_offset:u32) -> Self {
         Disassembler {
-            cpu
+            cpu,
+            start_offset
         }
     }
 
     pub fn run(&mut self) {
-        self.cpu.fetch_and_decode();
+        self.cpu.set_pc(self.start_offset);
+
+        for n in 0..25 {
+            let line = self.cpu.fetch_and_decode();
+        }
     }
 }
 fn main() {
@@ -34,12 +42,12 @@ fn main() {
     println!("line3: {:?}",line3);
 
 
-    let bytes = std::fs::read("./MANIC MINER.prg").unwrap();
-    let memory:BinaryBuffer = BinaryBuffer::new(bytes, 0);
-    let mut cpu = Cpu65xx::new(memory);
+    let bytes = std::fs::read("./basic-901226-01.bin").unwrap();
+    let memory:BinaryBuffer = BinaryBuffer::new(bytes, 0xA000);
+    let mut cpu = Cpu6510::new(memory);
 
-    let mut cazzo:Disassembler = Disassembler::new(&mut cpu);
-    cazzo.run();
+    let mut dasm:Disassembler = Disassembler::new(&mut cpu, 0x38A);
+    dasm.run();
 
     //let cpu:Cpu65xx = Cpu65xx::new(memory);
     //cpu.fetch_and_decode();

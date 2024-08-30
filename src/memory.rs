@@ -16,10 +16,16 @@ impl BinaryBuffer {
         }
     }
 
+    pub fn get_loaded_address(&self) -> u32 {
+        self.loaded_address
+    }
+
     pub fn read_byte(&self, offset: u32) -> u8 {
         self.data[offset as usize]
     }
-
+    pub fn read_signed_byte(&self, offset: u32) -> i8 {
+        self.data[offset as usize] as i8
+    }
     pub fn read_word_le(&self, offset: u32) -> u16 {
         let mut word:u16 = self.data[(offset+1) as usize] as u16;
         word<<=8;
