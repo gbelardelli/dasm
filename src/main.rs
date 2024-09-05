@@ -1,7 +1,7 @@
-use std::{result, time::Instant};
-use dasm::{ DisassembledLine};
+#![allow(dead_code)]
+
+
 use memory::BinaryBuffer;
-use utils::{AsciiReferences, extract_ascii_references};
 use cpus::{mos6510::Cpu6510, CpuTrait};
 
 pub mod utils;
@@ -11,14 +11,16 @@ mod memory;
 
 
 
-struct Disassembler<'a> {
-    cpu: &'a mut dyn CpuTrait,
+
+
+struct MyStruct {
+    cpu: Box<dyn CpuTrait>,
     start_offset:u32
 }
 
-impl<'a> Disassembler<'a> {
-    pub fn new(cpu: &'a mut dyn CpuTrait, start_offset:u32) -> Self {
-        Disassembler {
+impl MyStruct {
+    pub fn new(cpu: Box<dyn CpuTrait>, start_offset:u32) -> Self {
+        MyStruct {
             cpu,
             start_offset
         }
@@ -27,26 +29,40 @@ impl<'a> Disassembler<'a> {
     pub fn run(&mut self) {
         self.cpu.set_pc(self.start_offset);
 
-        for n in 0..25 {
-            let line = self.cpu.fetch_and_decode();
+        for n in 0..63 {
+            let line = self.cpu.disassemble_next();
+
+            let mut output_line= "".to_owned();
+
+            output_line.push_str(&format!("{:04X}    ",line.address));
+            
+            for i in 0..line.instr_size+1 {
+                output_line.push_str(&format!("{:02X} ",line.byte_code[i as usize]));
+            }
+            if line.instr_size == 0 {
+                output_line.push_str("      ");
+            }else if line.instr_size == 1 {
+                output_line.push_str("   ");
+            }
+            output_line.push_str(&format!("{} ", line.opcode));
+            output_line.push_str(&format!("{} ", line.operand));
+
+            println!("{}", output_line);
         }
-    }
+    }    
 }
+
+
 fn main() {
-    let line = DisassembledLine::new();
-    let line2 = DisassembledLine::default();
-    let line3 = DisassembledLine::from(dasm::LineType::Comment, 0x33, 0x2, "");
-    
-    println!("line: {:?}",line);
-    println!("line2: {:?}",line2);
-    println!("line3: {:?}",line3);
-
-
     let bytes = std::fs::read("./basic-901226-01.bin").unwrap();
     let memory:BinaryBuffer = BinaryBuffer::new(bytes, 0xA000);
-    let mut cpu = Cpu6510::new(memory);
+    //let mut cpu = Cpu6510::new(memory);
 
-    let mut dasm:Disassembler = Disassembler::new(&mut cpu, 0x38A);
+    //let mut dasm:Disassembler = Disassembler::new(&mut cpu, 0x38a);
+    //dasm.run();
+    let cpu: Box<dyn CpuTrait> = Box::new(Cpu6510::new(memory));
+    let mut dasm = MyStruct::new(cpu,0x38a);
+
     dasm.run();
 
     //let cpu:Cpu65xx = Cpu65xx::new(memory);

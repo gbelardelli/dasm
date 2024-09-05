@@ -1,5 +1,5 @@
 use crate::{cpus::Mnemonic, dasm::{BRANCH_OPCODE, INVALID_OPCODE, JMP_OPCODE, SUBROUTINE_OPCODE, UNDOC_OPCODE, VALID_OPCODE}};
-
+use super::addressing::AddressingMode;
 
 #[derive(Debug)]
 pub struct Opcode6510 {
@@ -7,42 +7,6 @@ pub struct Opcode6510 {
     pub addressing: AddressingMode,
     pub mnemonic: Mnemonic,
     pub flags: u32
-}
-
-#[derive(Debug,PartialEq)]
-pub enum AddressingMode {
-    AddrImplied,    // ""
-    AddrAccumulator,// ""
-    AddrImmediate,  // "#$%2.2X"
-    AddrZeroPage,   // "$%2.2X"
-    AddrZeroPageX,  // "$%2.2X,X"
-    AddrZeroPageY,  // "$%2.2X,Y"
-    AddrAbsolute,   // "$%2.2X%2.2X" -> 16bit
-    AddrAbsoluteX,  // "$%2.2X%2.2X,X" -> 16bit
-    AddrAbsoluteY,  // "$%2.2X%2.2X,Y" -> 16bit
-    AddrIndirectX,  // "($%2.2X,X)"
-    AddrIndirectY,  // "($%2.2X),Y"
-    AddrRelative,   // "$%4.4X"
-    AddrIndirect    // "($%2.2X%2.2X)"
-}
-
-pub fn format_string_from_addressing(addressing:&AddressingMode, value: u16) -> String {
-    match addressing {
-        AddressingMode::AddrImplied   | 
-        AddressingMode::AddrAccumulator => String::from(""),
-        AddressingMode::AddrImmediate => String::from(format!(" #${:02x}",value)),
-        AddressingMode::AddrZeroPage  => String::from(format!(" ${:02x}",value)),
-        AddressingMode::AddrZeroPageX => String::from(format!(" ${:02x},X",value)),
-        AddressingMode::AddrZeroPageY => String::from(format!(" ${:02x},Y",value)),
-        AddressingMode::AddrAbsolute => String::from(format!(" ${:04x}",value)),
-        AddressingMode::AddrAbsoluteX => String::from(format!(" ${:04x},X",value)),
-        AddressingMode::AddrAbsoluteY => String::from(format!(" ${:04x},Y",value)),
-        AddressingMode::AddrIndirectX => String::from(format!(" (${:04x},X)",value)),
-        AddressingMode::AddrIndirectY => String::from(format!(" (${:04x}),Y",value)),
-        AddressingMode::AddrRelative => String::from(format!(" ${:04x}",value)),
-        AddressingMode::AddrIndirect => String::from(format!(" (${:04x})",value)),
-        _ => String::from("")
-    }
 }
 
 pub const OPCODES_TABLE:&'static [Opcode6510] = &[
@@ -318,20 +282,3 @@ pub const OPCODES_TABLE:&'static [Opcode6510] = &[
     Opcode6510{ opcode: 0xFE, addressing:AddressingMode::AddrAbsoluteY,  mnemonic:"INC", flags:VALID_OPCODE },
     Opcode6510{ opcode: 0xFF, addressing:AddressingMode::AddrAbsoluteX,  mnemonic:"ISC", flags:UNDOC_OPCODE }
 ];
-
-pub fn get_pc_inc_from_addressing(addressing:&AddressingMode) -> u8 {
-    match addressing {
-        AddressingMode::AddrImplied   | 
-        AddressingMode::AddrAccumulator => 1,
-        AddressingMode::AddrImmediate |
-        AddressingMode::AddrZeroPage  | 
-        AddressingMode::AddrZeroPageX |
-        AddressingMode::AddrZeroPageY |
-        AddressingMode::AddrIndirectX |
-        AddressingMode::AddrIndirectY |
-        AddressingMode::AddrRelative => 2,
-        _ => 3
-    }
-}
-
-

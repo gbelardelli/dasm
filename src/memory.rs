@@ -1,4 +1,9 @@
 
+trait BusSize {}
+
+impl BusSize for u16 {}
+impl BusSize for u32 {}
+
 
 #[derive(Debug,Default)]
 pub struct BinaryBuffer {
@@ -6,6 +11,17 @@ pub struct BinaryBuffer {
     loaded_address: u32,
     buffer_size: usize,
 }
+
+// TODO: Valutare l'idea di fare BinaryBuffer<T>
+// per avere offset a 16, 32 o 64bit. Questo servirebbe per evitare di fare
+// troppe conversioni as type nel codice e renderlo anche più leggibile.
+// Il <T> dovrebbe essere limitato ai tipi u16,u32 e u64. Se non è possibile
+// tale limitazione si può fare con i trait ad es:
+// pub trait Bus16 {
+//    fn read_byte(&self, offset: u16) -> u8;
+//    fn read_signed_byte(&self, offset: u32) -> i8;
+//    fn read_word_le(&self, offset: u16) -> u16;
+// }
 
 impl BinaryBuffer {
     pub fn new(data: Vec<u8>, loaded_address: u32) -> Self {

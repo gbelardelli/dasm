@@ -1,18 +1,9 @@
-use crate::{dasm::DisassembledLine, memory::BinaryBuffer};
-
-
+use crate::dasm::DisassemblerTrait;
 
 pub mod mos6510;
 
-
-
-
 type Mnemonic = &'static str;
 
-
-
-
-pub trait CpuTrait {
-    fn fetch_and_decode(&mut self) -> DisassembledLine;
+pub trait CpuTrait : DisassemblerTrait {
     fn set_pc(&mut self, pc:u32);
 }

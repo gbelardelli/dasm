@@ -25,7 +25,9 @@ pub struct DisassembledLine {
     pub address_ref: u32,
     offset: u32,
     return_address: u32,
-    pub output: String,
+    pub byte_code: [u8;16],
+    pub opcode: String,
+    pub operand: String,
     label: String,
     comment: String,
     pub flags: u32
@@ -40,7 +42,9 @@ impl DisassembledLine {
             address_ref: 0,
             offset: 0,
             return_address: 0,
-            output: String::from(""),
+            operand: String::from(""),
+            opcode: String::from(""),
+            byte_code: [0; 16],
             label: String::from(""),
             comment: String::from(""),
             flags: UNINITIALIZED_OPCODE
@@ -55,7 +59,9 @@ impl DisassembledLine {
             address_ref: 0,
             offset,
             return_address: 0,
-            output: String::from(""),
+            operand: String::from(""),
+            opcode: String::from(""),
+            byte_code: [0; 16],            
             label: String::from(label),
             comment: String::from(""),
             flags: UNINITIALIZED_OPCODE
@@ -64,8 +70,8 @@ impl DisassembledLine {
 
 }
 
-pub trait Disassembler {
-    fn disassemble(&self, offset:usize, code: &[u8]) -> Vec<DisassembledLine>;
+pub trait DisassemblerTrait {
+    fn disassemble_next(&mut self) -> DisassembledLine;
 }
 
 #[cfg(test)]
