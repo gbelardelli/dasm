@@ -32,6 +32,9 @@ impl BinaryBuffer {
         }
     }
 
+    pub fn get_size(&self) -> usize {
+        self.buffer_size
+    }
     pub fn get_loaded_address(&self) -> u32 {
         self.loaded_address
     }

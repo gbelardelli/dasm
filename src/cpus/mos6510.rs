@@ -1,8 +1,7 @@
-use addressing::AddressingMode;
-use opcodes6510::OPCODES_TABLE;
-use crate::dasm::{SUBROUTINE_OPCODE, UNDOC_OPCODE};
+
+
 use super::CpuTrait;
-use crate::{dasm::{DisassembledLine, LineType}, memory::BinaryBuffer};
+use crate::memory::BinaryBuffer;
 
 mod opcodes6510;
 mod addressing;

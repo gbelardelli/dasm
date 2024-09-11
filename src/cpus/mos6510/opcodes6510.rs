@@ -1,4 +1,4 @@
-use crate::{cpus::Mnemonic, dasm::{BRANCH_OPCODE, INVALID_OPCODE, JMP_OPCODE, SUBROUTINE_OPCODE, UNDOC_OPCODE, VALID_OPCODE}};
+use crate::{cpus::Mnemonic, disassembler::{BRANCH_OPCODE, INDIRECT_FLAG, INVALID_OPCODE, JMP_OPCODE, SUBROUTINE_OPCODE, UNDOC_OPCODE, VALID_OPCODE}};
 use super::addressing::AddressingMode;
 
 #[derive(Debug)]
@@ -124,7 +124,7 @@ pub const OPCODES_TABLE:&'static [Opcode6510] = &[
     Opcode6510{ opcode: 0x69, addressing:AddressingMode::AddrImmediate,  mnemonic:"ADC", flags:VALID_OPCODE },
     Opcode6510{ opcode: 0x6A, addressing:AddressingMode::AddrAccumulator,mnemonic:"ROR", flags:VALID_OPCODE },
     Opcode6510{ opcode: 0x6B, addressing:AddressingMode::AddrImmediate,  mnemonic:"ARR", flags:UNDOC_OPCODE },
-    Opcode6510{ opcode: 0x6C, addressing:AddressingMode::AddrIndirect,   mnemonic:"JMP", flags:VALID_OPCODE|JMP_OPCODE },
+    Opcode6510{ opcode: 0x6C, addressing:AddressingMode::AddrIndirect,   mnemonic:"JMP", flags:VALID_OPCODE|JMP_OPCODE|INDIRECT_FLAG },
     Opcode6510{ opcode: 0x6D, addressing:AddressingMode::AddrAbsolute,   mnemonic:"ADC", flags:VALID_OPCODE },
     Opcode6510{ opcode: 0x6E, addressing:AddressingMode::AddrAbsolute,   mnemonic:"ROR", flags:VALID_OPCODE },
     Opcode6510{ opcode: 0x6F, addressing:AddressingMode::AddrAbsolute,   mnemonic:"RRA", flags:UNDOC_OPCODE },

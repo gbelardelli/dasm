@@ -17,7 +17,7 @@ pub enum AddressingMode {
 }
 
 impl AddressingMode {
-    pub fn format_string(addressing:&AddressingMode, value: u16) -> String {
+    pub fn format_string(addressing:&AddressingMode, value: &u16) -> String {
         match addressing {
             AddressingMode::AddrImplied   | 
             AddressingMode::AddrAccumulator => String::from(""),

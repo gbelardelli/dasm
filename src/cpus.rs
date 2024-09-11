@@ -1,4 +1,4 @@
-use crate::dasm::DisassemblerTrait;
+use crate::disassembler::DisassemblerTrait;
 
 pub mod mos6510;
 
