@@ -7,7 +7,7 @@ impl DisassemblerTrait for Cpu6510 {
     fn disassemble_next(&mut self) -> Option<DisassembledLine> {
         //let current_address:u32 = self.pc as u32 + self.memory.get_loaded_address();
         let current_address=self.memory.address_of(self.pc as u64);
-        if self.pc >= self.memory.get_size() as u16 {
+        if self.pc >= self.memory.get_size() as u64 {
             return None;
         }
         let fetched_opcode:u8 = self.memory.read_byte(self.pc);
@@ -68,7 +68,7 @@ impl DisassemblerTrait for Cpu6510 {
             }
         }
 
-        self.pc += pc_inc as u16;
+        self.pc += pc_inc as u64;
         Some(dasm_line)
     }
 }

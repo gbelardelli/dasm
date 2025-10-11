@@ -3,7 +3,7 @@ use crate::{cpus::CpuTrait, disassembler::{BRANCH_OPCODE, JMP_OPCODE, SUBROUTINE
 use super::{types::DisassembledLine, Dasm, INDIRECT_FLAG};
 
 impl Dasm {
-    pub fn new(cpu: Box<dyn CpuTrait>, start_pc:u32) -> Self {
+    pub fn new(cpu: Box<dyn CpuTrait>, start_pc:u64) -> Self {
         Dasm {
             cpu,
             start_pc,

@@ -25,7 +25,7 @@ pub struct Dasm {
     relative_label_id: u32,
     subroutine_label_id: u32,
     jump_label_id: u32,
-    start_pc:u32
+    start_pc:u64
 }
 
 pub trait DisassemblerTrait {
