@@ -15,8 +15,12 @@ pub struct Cpu6510 {
 
 
 impl CpuTrait for Cpu6510 {
-    fn set_pc(&mut self, pc:u32) {
-        self.pc = pc as u16;
+    fn set_program_counter(&mut self, pc:u32) -> Result<i32,i32> {
+        if pc <= u16::MAX as u32{
+            self.pc = pc as u16;
+            return Ok(0);
+        }
+        Err(1)
     }
 }
 

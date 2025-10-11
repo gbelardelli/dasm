@@ -12,8 +12,8 @@ pub enum LineType {
 pub struct DisassembledLine {
     pub line_type: LineType,
     pub instr_size: u8,
-    pub address: u32,
-    pub address_ref: u32,
+    pub address: u64,
+    pub address_ref: u64,
     offset: u32,
     return_address: u32,
     pub byte_code: [u8;16],

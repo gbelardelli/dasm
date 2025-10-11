@@ -1,15 +1,16 @@
-use crate::disassembler::{types::{DisassembledLine, LineType}, DisassemblerTrait, UNDOC_OPCODE};
+use crate::{disassembler::{types::{DisassembledLine, LineType}, DisassemblerTrait, UNDOC_OPCODE}, memory::SignedWrap};
 
 use super::{addressing::AddressingMode, opcodes6510::OPCODES_TABLE, Cpu6510};
 
 
 impl DisassemblerTrait for Cpu6510 {
     fn disassemble_next(&mut self) -> Option<DisassembledLine> {
-        let current_address:u32 = self.pc as u32 + self.memory.get_loaded_address();
+        //let current_address:u32 = self.pc as u32 + self.memory.get_loaded_address();
+        let current_address=self.memory.address_of(self.pc as u64);
         if self.pc >= self.memory.get_size() as u16 {
             return None;
         }
-        let fetched_opcode:u8 = self.memory.read_byte(self.pc as u32);
+        let fetched_opcode:u8 = self.memory.read_byte(self.pc);
 
         let opcode=&OPCODES_TABLE[fetched_opcode as usize];
         let mut dasm_line = DisassembledLine::new();
@@ -37,11 +38,11 @@ impl DisassemblerTrait for Cpu6510 {
         if dasm_line.instr_size != 0 {
             if dasm_line.instr_size == 1 {
                 if opcode.addressing != AddressingMode::AddrRelative {
-                    let byte=self.memory.read_byte((self.pc+1) as u32);
+                    let byte=self.memory.read_byte(self.pc+1);
                     dasm_line.byte_code[1] = byte;
                     address = byte as u16;
                 }else{
-                    let byte=self.memory.read_signed_byte((self.pc+1) as u32);
+                    let byte=self.memory.read_byte(self.pc+1).to_signed();
                     dasm_line.byte_code[1] = byte as u8;
 
                     let result = (current_address as i32) + (byte as i32) + 2;
@@ -63,7 +64,7 @@ impl DisassemblerTrait for Cpu6510 {
             }
 
             if opcode.addressing != AddressingMode::AddrImmediate {
-                dasm_line.address_ref = address as u32;
+                dasm_line.address_ref = address as u64;
             }
         }
 

@@ -16,8 +16,10 @@ impl Dasm {
     }
 
     pub fn run(&mut self) {
-        self.cpu.set_pc(self.start_pc);
-
+        let res = self.cpu.set_program_counter(self.start_pc);
+        if res.is_err() {
+            panic!("program counter too big");
+        }
         self.pass1();
         self.pass2();
         self.print_dasm();

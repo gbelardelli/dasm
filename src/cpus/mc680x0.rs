@@ -1,3 +1,5 @@
+use super::CpuTrait;
+
 
 
 pub struct MC680x0 {
@@ -6,7 +8,7 @@ pub struct MC680x0 {
     y: u8,
     sp: u8,
 
-    pc: u16,
+    pc: u32,
 
     n: bool,
     v: bool,
@@ -15,9 +17,14 @@ pub struct MC680x0 {
     z: bool,
     c: bool,
 }
-
-impl DasmTrait for MC680x0 {
-    fn dasm(bytes: &Vec<u8>) {
-
+/*
+impl CpuTrait for MC680x0 {
+    fn set_pc(&mut self, pc:u32) -> Result<i32,i32> {
+        if pc <= 0xFFFFFF {
+            self.pc = pc;
+            return Ok(0);
+        }
+        Err(1)
     }
 }
+    */
