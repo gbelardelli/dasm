@@ -19,6 +19,7 @@ pub struct DisassembledLine {
     pub byte_code: [u8;16],
     pub opcode: String,
     pub operand: String,
+    pub operand_address: u64,
     label: String,
     pub comment: String,
     pub flags: u32
@@ -33,6 +34,7 @@ impl DisassembledLine {
             address_ref: 0,
             offset: 0,
             return_address: 0,
+            operand_address: 0,
             operand: String::from(""),
             opcode: String::from(""),
             byte_code: [0; 16],

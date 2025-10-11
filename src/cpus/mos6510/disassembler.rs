@@ -66,6 +66,8 @@ impl DisassemblerTrait for Cpu6510 {
             if opcode.addressing != AddressingMode::AddrImmediate {
                 dasm_line.address_ref = address as u64;
             }
+
+            dasm_line.operand_address = address as u64;
         }
 
         self.pc += pc_inc as u64;
