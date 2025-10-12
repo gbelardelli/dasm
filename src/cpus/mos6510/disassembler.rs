@@ -74,3 +74,27 @@ impl DisassemblerTrait for Cpu6510 {
         Some(dasm_line)
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use crate::{cpus::{mos6510, CpuTrait}, disassembler::Dasm, memory::BinaryBuffer};
+
+    use super::*;
+
+    fn prepare_test(data: Vec<u8>) -> mos6510::Cpu6510 {
+        let memory:BinaryBuffer = BinaryBuffer::new(data, 0xE000);
+        let cpu=Cpu6510::new(memory);
+        cpu
+    }
+    #[test]
+    fn test1() {
+        let data = vec![0,3,2,1];
+        let mut cpu=prepare_test(data);
+        let _ =  cpu.set_program_counter(0);
+        let res=cpu.disassemble_next();
+
+        
+        assert_eq!(1,1);
+    }
+}
